@@ -92,12 +92,12 @@ export default function ProfileCompletionModal() {
         window.location.reload();
     };
 
-    const heading = step === 'school' ? '彰師大學生驗證' : step === 'byok' ? '校外使用者註冊' : '選擇你的身分';
+    const heading = step === 'school' ? '彰師大師生驗證' : step === 'byok' ? '校外使用者註冊' : '選擇你的身分';
     const subheading = step === 'school'
         ? '輸入你的學校信箱收取 6 位數驗證碼，驗證後自動綁定學號（教職員信箱則綁定信箱帳號）。'
         : step === 'byok'
             ? '提供自己的 Gemini 金鑰即可完成註冊，功能與校內使用者相同。'
-            : '平台同時開放彰師大學生與校外使用者，請先選擇你的身分。';
+            : '平台同時開放彰師大師生與校外使用者，請先選擇你的身分。';
 
     return (
         <AnimatePresence>
@@ -146,13 +146,13 @@ export default function ProfileCompletionModal() {
                                 <div className="space-y-3">
                                     <IdentityOption
                                         icon={GraduationCap}
-                                        title="我是彰師大學生"
+                                        title="我是彰師大師生"
                                         description="以學校信箱（@mail.ncue.edu.tw／@gm.ncue.edu.tw）收驗證碼綁定學號，AI 功能由平台提供。"
                                         onSelect={() => { setStep('school'); setErrorMessage(''); }}
                                     />
                                     <IdentityOption
                                         icon={Globe}
-                                        title="我不是彰師大學生"
+                                        title="我不是彰師大師生"
                                         description="自備 Google AI Studio 的 Gemini 金鑰即可註冊，同樣能使用 AI 助理、公告訂閱等完整功能。"
                                         onSelect={() => { setStep('byok'); setErrorMessage(''); }}
                                     />

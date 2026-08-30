@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from 'react';
-import { School, Mail, MessageSquare, Sparkles, Rss } from 'lucide-react';
+import { School, Mail, MessageSquare, Sparkles, Rss, Code2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import FeedbackModal from './FeedbackModal';
 import PlayStoreGuideModal, { GooglePlayBadge } from './PlayStoreGuideModal';
@@ -114,11 +114,12 @@ export default function Footer() {
                             </div>
                             <div className="space-y-4 w-full">
                                 <div className="text-white/70">
-                                    <Link href={siteConfig.developer.url} target="_blank" rel="noopener noreferrer" aria-label={`${siteConfig.developer.name} 官方網站`}
-                                        className="inline-block mb-4 mx-auto sm:mx-0 rounded-lg outline-none transition-opacity duration-200 hover:opacity-100 opacity-90 focus-visible:ring-2 focus-visible:ring-footer-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer">
-                                        <img src="/logo_transparent.svg" alt="io Software Logo" className="h-9 sm:h-11 w-auto max-w-full" />
-                                    </Link>
-                                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-8 gap-y-4 mt-2">
+                                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-8 gap-y-4">
+                                        <Link href={siteConfig.developer.url} target="_blank" rel="noopener noreferrer" aria-label={`${siteConfig.developer.name} 個人網站`}
+                                            className="group flex items-center gap-2.5 hover:text-white transition-all duration-300 hover:-translate-y-0.5 outline-none focus-visible:ring-2 focus-visible:ring-footer-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer rounded-lg p-1">
+                                            <Code2 className="w-5 h-5 text-footer-accent" />
+                                            <span className="text-sm sm:text-base font-medium text-white/70 group-hover:text-white footer-link-underline" translate="no">{siteConfig.developer.name}</span>
+                                        </Link>
                                         <button type="button" onClick={() => setIsFeedbackOpen(true)} className="group flex items-center gap-2.5 hover:text-white transition-all duration-300 hover:-translate-y-0.5 outline-none focus-visible:ring-2 focus-visible:ring-footer-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer rounded-lg p-1 cursor-pointer">
                                             <MessageSquare className="w-5 h-5 text-footer-accent" />
                                             <span className="text-sm sm:text-base font-medium text-white/70 group-hover:text-white footer-link-underline">平台問題回報</span>

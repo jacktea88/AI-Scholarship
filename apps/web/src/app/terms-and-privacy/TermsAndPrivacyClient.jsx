@@ -3,13 +3,13 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
-import { CheckCircle, Loader2, ArrowRight, ShieldCheck, Database, UserCheck, Mail, Globe2, Scale } from 'lucide-react';
+import { CheckCircle, Loader2, ArrowRight, ShieldCheck, Database, UserCheck, Mail, Globe2, Scale, ExternalLink } from 'lucide-react';
 import { siteConfig } from '@/lib/siteConfig';
 
 // --- 文件版本資訊（單一來源） ---
 const EFFECTIVE_DATE = '2026 年 5 月 11 日';
-const LAST_UPDATED = '2026 年 7 月 27 日';
-const CONTACT_EMAIL = 'contact@iosoftware.ai';
+const LAST_UPDATED = '2026 年 8 月 30 日';
+const CONTACT_EMAIL = 'contact@mingchen.dev';
 
 // --- 動畫設定 ---
 const containerVariants = {
@@ -349,7 +349,7 @@ export default function TermsAndPrivacyPage() {
 
                             <motion.div variants={itemVariants} className="mt-6 space-y-4 text-sm sm:text-base leading-relaxed text-ink-soft px-2 sm:px-0">
                                 <p>
-                                    歡迎您使用由 <strong>國立彰化師範大學學生事務處生活輔導組</strong>（以下簡稱「本組」）委託 <strong>io Software</strong>（以下簡稱「開發團隊」）開發與維護之「{siteConfig.name}」（以下簡稱「本平台」）。
+                                    歡迎您使用由 <strong>國立彰化師範大學學生事務處生活輔導組</strong>（以下簡稱「本組」）委託 <strong>{siteConfig.developer.contactName}</strong>（以下簡稱「開發者」）開發與維護之「{siteConfig.name}」（以下簡稱「本平台」）。
                                 </p>
                                 <p>
                                     為保障您的權益，請於使用本平台服務前詳細閱讀以下條款。當您完成登入程序或開始使用本平台服務時，即視為您已<strong>閱讀、理解並完全同意</strong>接受本服務條款暨隱私權政策（以下合稱「本條款」）之所有內容。本隱私權政策依據中華民國《個人資料保護法》（下稱「個資法」）制定，並參考歐盟《一般資料保護規則》（GDPR）之原則設計。
@@ -381,7 +381,7 @@ export default function TermsAndPrivacyPage() {
 
                             <ContentSection id="tos_1" activeId={activeId} title="第一條、認知與接受條款">
                                 <ol className="list-decimal pl-5 space-y-3">
-                                    <li><strong>條款效力</strong>：本條款構成您與本組及開發團隊之間關於使用本平台之完整合意。</li>
+                                    <li><strong>條款效力</strong>：本條款構成您與本組及開發者之間關於使用本平台之完整合意。</li>
                                     <li><strong>條款修訂</strong>：因應法令變更或服務調整，我們保留隨時修改本條款之權利。所有修改將於本平台公告後即刻生效。若您於條款修改後繼續使用本服務，即視為您已接受該等修改；重大變更將依第十七條另行通知。</li>
                                     <li><strong>未成年人使用</strong>：若您為未滿十八歲之未成年人，應請您的法定代理人（如父母或監護人）詳閱、理解並同意本條款之所有內容後，方得使用本平台。當您使用本服務時，即推定您的法定代理人已同意您接受本條款之拘束。</li>
                                 </ol>
@@ -402,7 +402,7 @@ export default function TermsAndPrivacyPage() {
                                         <p className='mt-2 text-sm leading-relaxed'>
                                             您明確了解並同意，本平台所使用之 AI 模型（包括但不限於 Google Gemini 系列）所生成之任何摘要、結構化資料及對話回應，僅供輔助參考，<strong>不保證其絕對正確性、完整性或即時性</strong>。
                                             <br /><br />
-                                            <strong>所有獎學金之申請資格、期限、金額及應備文件，均應以獎學金提供單位之原始公告為準。</strong>本組及開發團隊不對因信賴 AI 生成內容而產生之任何直接或間接損害（包括但不限於申請逾期、資格不符等）承擔法律責任。
+                                            <strong>所有獎學金之申請資格、期限、金額及應備文件，均應以獎學金提供單位之原始公告為準。</strong>本組及開發者不對因信賴 AI 生成內容而產生之任何直接或間接損害（包括但不限於申請逾期、資格不符等）承擔法律責任。
                                         </p>
                                     </li>
                                 </ol>
@@ -429,7 +429,7 @@ export default function TermsAndPrivacyPage() {
 
                             <ContentSection id="tos_5" activeId={activeId} title="第五條、智慧財產權">
                                 <ol className="list-decimal pl-5 space-y-3">
-                                    <li><strong>平台內容</strong>：本平台呈現之所有內容（包括但不限於程式碼、介面設計、文字敘述、圖片、資料庫結構），除原始獎學金公告內容屬原權利人所有外，均由本組或開發團隊依法擁有智慧財產權。非經事前書面同意，不得任意重製、散布、改作或進行還原工程。</li>
+                                    <li><strong>平台內容</strong>：本平台呈現之所有內容（包括但不限於程式碼、介面設計、文字敘述、圖片、資料庫結構），除原始獎學金公告內容屬原權利人所有外，均由本組或開發者依法擁有智慧財產權。非經事前書面同意，不得任意重製、散布、改作或進行還原工程。</li>
                                     <li><strong>授權利用</strong>：管理員上傳之獎學金相關檔案與資訊，視為授權本平台於服務目的範圍內進行必要之重製、編輯、轉換（如 AI 分析）與公開傳輸。</li>
                                 </ol>
                             </ContentSection>
@@ -440,14 +440,14 @@ export default function TermsAndPrivacyPage() {
                                     <li>對本服務相關軟硬體設備進行搬遷、更換、升級、保養或維修時。</li>
                                     <li>使用者有任何違反政府法令或本使用條款情形。</li>
                                     <li>天災或其他不可抗力之因素所致之服務停止或中斷。</li>
-                                    <li>非本組或開發團隊所得控制之事由而致本服務資訊顯示不正確、或遭偽造、竄改、刪除或擷取、或致系統中斷或不能正常運作時。</li>
+                                    <li>非本組或開發者所得控制之事由而致本服務資訊顯示不正確、或遭偽造、竄改、刪除或擷取、或致系統中斷或不能正常運作時。</li>
                                 </ul>
                             </ContentSection>
 
                             <ContentSection id="tos_7" activeId={activeId} title="第七條、責任限制與免責聲明">
                                 <ol className="list-decimal pl-5 space-y-3">
-                                    <li><strong>非保證條款</strong>：本平台係依「現況」及「現有」之基礎提供，本組及開發團隊不保證服務內容將完全符合您的需求，亦不保證服務之及時性、安全性、準確性或不會中斷。</li>
-                                    <li><strong>第三方連結</strong>：本平台可能包含連結至其他網站。該等網站均由各該業者自行經營，不屬本組或開發團隊控制及負責範圍之內。</li>
+                                    <li><strong>非保證條款</strong>：本平台係依「現況」及「現有」之基礎提供，本組及開發者不保證服務內容將完全符合您的需求，亦不保證服務之及時性、安全性、準確性或不會中斷。</li>
+                                    <li><strong>第三方連結</strong>：本平台可能包含連結至其他網站。該等網站均由各該業者自行經營，不屬本組或開發者控制及負責範圍之內。</li>
                                 </ol>
                             </ContentSection>
 
@@ -456,7 +456,7 @@ export default function TermsAndPrivacyPage() {
                             <motion.h2 variants={itemVariants} className="text-xl sm:text-3xl font-bold border-b border-line pb-4 mt-10 sm:mt-12 mb-2 text-ink px-2 sm:px-0">第二部分：隱私權政策</motion.h2>
 
                             <ContentSection id="privacy_8" activeId={activeId} title="第八條、個人資料之蒐集類別與目的">
-                                <p>本平台為個資法所定之非公務機關資料蒐集者，由本組擔任資料管理者、開發團隊擔任受託處理者。我們僅蒐集提供服務所必要之最少資料（資料最小化原則）：</p>
+                                <p>本平台為個資法所定之非公務機關資料蒐集者，由本組擔任資料管理者、開發者擔任受託處理者。我們僅蒐集提供服務所必要之最少資料（資料最小化原則）：</p>
                                 <div className="mt-4 bg-page rounded-xl border border-line px-4 sm:px-5 py-1 not-prose">
                                     <div className="hidden sm:grid grid-cols-[160px_1fr_150px] gap-4 py-2.5 border-b border-line text-xs font-bold text-ink-soft tracking-wider">
                                         <span>類別</span><span>內容</span><span className="text-right">來源</span>
@@ -477,7 +477,7 @@ export default function TermsAndPrivacyPage() {
                                 <ol className="list-decimal pl-5 space-y-3">
                                     <li><strong>利用期間</strong>：自您首次登入之日起，至您註銷帳戶、或本平台終止服務之日止（法令另有保存義務者除外，詳第十二條）。</li>
                                     <li><strong>利用地區</strong>：中華民國領域內，及第十條所列雲端服務供應商之伺服器所在地。</li>
-                                    <li><strong>利用對象</strong>：僅限本組、開發團隊，及為提供服務所必要之受託雲端服務商；各受託者均僅得於委託範圍內處理資料。</li>
+                                    <li><strong>利用對象</strong>：僅限本組、開發者，及為提供服務所必要之受託雲端服務商；各受託者均僅得於委託範圍內處理資料。</li>
                                     <li><strong>利用方式</strong>：以自動化系統於前述目的範圍內處理與利用，不進行造成法律效果之純自動化決策。</li>
                                     <li><strong>AI 對話處理</strong>：您與 AI 助理之對話內容（含經您綁定後之 LINE 對話）會傳送至 Google Gemini API 以生成回覆。依 Google 之 API 資料使用政策，透過付費 API 提交之內容<strong>不會被用於訓練其公開模型</strong>；本平台亦不會將您的帳號識別資料（如 Email、學號）附加於 AI 請求中。請避免於對話中提供病歷、犯罪前科等特種個人資料或無關之第三人個資。</li>
                                     <li><strong>AI 背景資料與對話中上傳之文件</strong>：您於「個資管理」自填之背景資料，會於每次 AI 對話（含 LINE）自動提供給模型作為個人化推薦依據，您可隨時修改或清除，清除後即不再使用。您於 AI 對話中上傳之文件（如自傳、計畫書、公文）僅用於<strong>當次對話</strong>之分析與建議，內容經模型處理後即不留存原始檔案，亦不用於模型訓練。</li>
@@ -580,7 +580,7 @@ export default function TermsAndPrivacyPage() {
                                             <h4 className="font-bold text-ink">平台技術、帳號與隱私權事務</h4>
                                         </div>
                                         <p className="text-sm text-ink-soft mb-4 leading-relaxed">
-                                            若您對平台操作、帳號問題、本條款或個人資料保護有任何疑問，或欲行使第十三條之當事人權利，請聯繫開發團隊（io Software）：
+                                            若您對平台操作、帳號問題、本條款或個人資料保護有任何疑問，或欲行使第十三條之當事人權利，請聯繫開發者（{siteConfig.developer.contactName}）：
                                         </p>
                                         <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center gap-2 text-primary font-semibold hover:underline">
                                             <Mail size={15} aria-hidden="true" />
@@ -596,9 +596,11 @@ export default function TermsAndPrivacyPage() {
 
                             <motion.div variants={itemVariants} className="border-t border-line mt-12 pt-6 px-2 sm:px-0">
                                 <div className="flex justify-end">
-                                    <a href={siteConfig.developer.url} target="_blank" rel="noopener noreferrer" aria-label="io Software 官方網站">
-                                        {/* 透明 logo 為白色線稿：淺色模式反轉為深色，深色模式原樣 */}
-                                        <img src="/logo_transparent.svg" alt="io Software Logo" className="h-12 sm:h-14 w-auto invert dark:invert-0 opacity-85 hover:opacity-100 transition-opacity" />
+                                    <a href={siteConfig.developer.url} target="_blank" rel="noopener noreferrer" aria-label={`${siteConfig.developer.name} 個人網站`}
+                                        className="group inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink transition-colors">
+                                        <span>平台開發與維護</span>
+                                        <span className="font-semibold text-ink group-hover:text-primary transition-colors" translate="no">{siteConfig.developer.name}</span>
+                                        <ExternalLink size={14} className="opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                                     </a>
                                 </div>
                             </motion.div>

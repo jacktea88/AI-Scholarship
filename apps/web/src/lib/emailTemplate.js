@@ -104,7 +104,7 @@ ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:al
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="640" style="max-width:640px;width:100%;">
         <!-- 內容區 -->
         <tr><td class="content" style="padding:44px 40px 0;">
-            <img src="${EMAIL_LOGO_URL}" alt="${siteConfig.developer.name}" height="44" style="height:44px;width:auto;display:block;border:0;" />
+            <img src="${EMAIL_LOGO_URL}" alt="io Software" height="44" style="height:44px;width:auto;display:block;border:0;" />
             ${heading ? `
             <h1 class="heading" style="margin:36px 0 24px;font-size:28px;font-weight:600;color:${C.ink};line-height:1.35;">${heading}</h1>` : '<div style="height:28px;"></div>'}
             <div class="html-body">${bodyHtml}</div>
@@ -125,7 +125,7 @@ ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:al
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr>
                         <td style="font-size:12px;color:${C.soft};padding-right:8px;vertical-align:middle;line-height:26px;">Powered by</td>
                         <td style="vertical-align:middle;">
-                            <img src="${EMAIL_LOGO_URL}" alt="${siteConfig.developer.name}" height="26" style="height:26px;width:auto;display:block;border:0;opacity:0.9;margin-top:-2px;" />
+                            <img src="${EMAIL_LOGO_URL}" alt="io Software" height="26" style="height:26px;width:auto;display:block;border:0;opacity:0.9;margin-top:-2px;" />
                         </td>
                     </tr></table>
                 </td></tr>

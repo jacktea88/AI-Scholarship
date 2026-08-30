@@ -18,8 +18,8 @@ export const siteConfig = {
         'https://scholarship.ncuesa.org.tw'
     ).replace(/\/$/, ''),
     developer: {
-        name: 'io Software',
-        url: 'https://iosoftware.ai',
+        name: 'Ming Chen',
+        url: 'https://mingchen.dev',
         contactName: '陳泰銘',
         contactEmail: '3526ming@gmail.com',
     },
