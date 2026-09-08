@@ -100,7 +100,7 @@ async function main() {
                 const buffer = await fs.readFile(filePath);
 
                 const result = await ai.models.generateContent({
-                    model: 'gemini-3.6-flash',
+                    model: 'gemini-3.8-flash', // 與 src/lib/ai/models.js 的 GEMINI_MODEL 同步
                     contents: [{
                         parts: [
                             { inlineData: { mimeType: 'application/pdf', data: buffer.toString('base64') } },

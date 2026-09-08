@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from '@google/genai';
 import { getSystemConfig } from '@/lib/config';
+import { GEMINI_MODEL } from '@/lib/ai/models';
 import { verifyUserAuth, handleApiError } from '@/lib/apiMiddleware';
 import { siteConfig } from '@/lib/siteConfig';
 
@@ -36,12 +37,8 @@ export async function POST(request) {
     const sourceUrls = formData.get('sourceUrls') || '';
     const files = formData.getAll('files'); // Array of File objects
 
-    // 4. Initialize Gemini
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3.6-flash",
-      generationConfig: { responseMimeType: "application/json" },
-    });
+    // 4. Initialize Gemini（@google/genai，與助理 agent 相同 SDK）
+    const ai = new GoogleGenAI({ apiKey: geminiApiKey });
 
     // 5. Construct Parts
     const parts = [];
@@ -155,10 +152,19 @@ ${promptText ? `# 特定優化指令\n${promptText}\n` : ''}
       }
     }
 
-    // 6. Generate Content
-    const result = await model.generateContent({ contents: [{ parts }] });
-    const response = await result.response;
-    const text = response.text();
+    // 6. Generate Content（JSON 模式：前端直接 JSON.parse 回傳的 text）
+    const result = await ai.models.generateContent({
+      model: GEMINI_MODEL,
+      contents: [{ parts }],
+      config: { responseMimeType: 'application/json' },
+    });
+    const text = (result.text || '').trim();
+    if (!text) {
+      // 舊 SDK 在無內容時會於 response.text() 拋錯；新 SDK 回傳 undefined，需自行檢查
+      const reason = result.candidates?.[0]?.finishReason || result.promptFeedback?.blockReason || 'EMPTY';
+      console.error('[AI] generate-announcement empty response:', reason);
+      return NextResponse.json({ error: `AI 未回傳內容（${reason}），請調整來源資料後重試` }, { status: 502 });
+    }
 
     return NextResponse.json({ success: true, text });
 

@@ -4,7 +4,7 @@
 [![React](https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com/)
-[![Google Gemini](https://img.shields.io/badge/Gemini-3.6%20Flash-4285F4?style=flat-square&logo=google)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/Gemini-3.8%20Flash-4285F4?style=flat-square&logo=google)](https://ai.google.dev/)
 [![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial-red?style=flat-square)](LICENSE)
 
 國立彰化師範大學（NCUE）獎助學金資訊整合平台。彙整校內外獎助學金公告，並以自建的
@@ -21,7 +21,7 @@ Gemini AI 助理、LINE 官方帳號整合與訂閱提醒機制，協助學生�
 - **公告瀏覽與搜尋**：分類篩選、關鍵字搜尋、截止倒數標示（≤7 天、≤3 天分級提醒），完整 RWD 與深／淺色主題。
 - **公告詳情**：附件下載、外部連結（自動擷取網站標題預覽）、PDF 匯出、一鍵加入 Google 日曆（含截止日與公告直達連結）、左右鍵切換前後公告。
 - **訂閱提醒**：登入後可訂閱任一公告，於截止日前 1／3／5／7 天（自行設定）收到 Email 提醒。
-- **AI 獎助學金助理**：自建 Gemini 代理（`gemini-3.6-flash`，`@google/genai`），具工具調用迴圈——公告搜尋、近期截止清單、公告詳情、FAQ 查詢、日期計算；串流回覆並即時顯示思考狀態與工具執行進度。
+- **AI 獎助學金助理**：自建 Gemini 代理（`gemini-3.8-flash`，`@google/genai`），具工具調用迴圈——公告搜尋、近期截止清單、公告詳情、FAQ 查詢、日期計算；串流回覆並即時顯示思考狀態與工具執行進度。
 - **LINE 帳號綁定**：透過 LINE Login OAuth 或驗證碼綁定；綁定後 LINE 與網頁端 AI 助理共享對話脈絡。
 - **相關資源與常見問答**：分頁式版面（相關資源／常見問答／使用手冊），FAQ 內容由後台維護。
 - **站內問題回報**：彈出式表單，支援附加圖片並自動記錄回報頁面網址，送出後寄至維護信箱。
@@ -44,7 +44,7 @@ Gemini AI 助理、LINE 官方帳號整合與訂閱提醒機制，協助學生�
 | **框架** | Next.js 16（App Router） | 前後端一體，Server Components + API Routes。 |
 | **UI** | React 19、Tailwind CSS 4、framer-motion | Design token 主題系統（深／淺色）、動效與拖拉排序。 |
 | **後端服務** | Supabase | PostgreSQL、Google OAuth 驗證、Storage、Row Level Security。 |
-| **AI** | `@google/genai`（Gemini 3.6 Flash） | 自建代理迴圈與工具調用，知識庫存於資料庫。 |
+| **AI** | `@google/genai`（Gemini 3.8 Flash） | 自建代理迴圈與工具調用，知識庫存於資料庫。 |
 | **郵件** | Nodemailer（SMTP） | 訂閱提醒、公告通知、問題回報轉寄。 |
 | **PDF** | `@react-pdf/renderer` | 公告 PDF 匯出。 |
 | **訊息** | LINE Messaging API / LINE Login | Webhook 自動回覆、推播、Rich Menu、帳號綁定。 |

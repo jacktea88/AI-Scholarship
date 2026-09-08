@@ -1,7 +1,7 @@
 /**
  * AI 獎學金助理核心 (自建 Gemini Agent，取代 Dify / digiRunner)
  *
- * - 模型：gemini-3.6-flash（@google/genai）
+ * - 模型：GEMINI_MODEL（見 ./models.js；@google/genai）
  * - 具備多工具 Function Calling 迴圈（搜尋 / 列表 / 詳情 / 日期）
  * - 供兩個入口共用：
  *   1. /api/chat        → 網頁 AI 助理（串流，HTML 輸出 + 公告卡片）
@@ -12,8 +12,9 @@ import { GoogleGenAI } from '@google/genai';
 import { getSystemConfig } from '../config';
 import { siteConfig } from '../siteConfig';
 import { toolDeclarations, executeTool, describeToolCall } from './tools';
+import { GEMINI_MODEL } from './models';
 
-export const GEMINI_MODEL = 'gemini-3.6-flash';
+export { GEMINI_MODEL };
 
 const MAX_TOOL_ROUNDS = 6;
 

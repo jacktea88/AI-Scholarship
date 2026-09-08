@@ -352,10 +352,7 @@ export default function ProfilePage() {
                                             : '校內帳號'}
                                     </dt>
                                     {(derivedStudentId || user?.profile?.student_id) ? (
-                                        <>
-                                            <dd className="text-base text-ink mt-1" translate="no">{derivedStudentId || user?.profile?.student_id}</dd>
-                                            <p className="text-[11px] text-ink-soft/70 mt-1">由學校信箱自動判定，無法手動修改</p>
-                                        </>
+                                        <dd className="text-base text-ink mt-1" translate="no">{derivedStudentId || user?.profile?.student_id}</dd>
                                     ) : (
                                         <div className="mt-1.5 space-y-2">
                                             {isExternalUser && (

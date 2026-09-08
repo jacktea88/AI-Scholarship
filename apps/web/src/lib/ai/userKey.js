@@ -19,9 +19,10 @@ import {
 import { supabaseServer } from '../supabase/server';
 import { getSystemConfig } from '../config';
 import { decryptSecret } from '../secretBox';
+import { GEMINI_MODEL } from './models';
 
 /** 驗證金鑰時使用的模型（與助理主要模型一致，確保金鑰真的能跑對話） */
-const VALIDATION_MODEL = 'gemini-3.6-flash';
+const VALIDATION_MODEL = GEMINI_MODEL;
 
 const PROFILE_FIELDS = 'id, email, student_id, account_type, gemini_key_storage, gemini_key_hint, gemini_key_updated_at';
 
@@ -137,6 +138,8 @@ export async function validateGeminiKey(rawKey) {
         const result = await ai.models.generateContent({
             model: VALIDATION_MODEL,
             contents: '回覆 OK 兩個字即可。',
+            // 純連線／權限檢查，不需推理：以低思考等級省下預設 medium 的思考 token 與延遲
+            config: { thinkingConfig: { thinkingLevel: 'low' } },
         });
         if (typeof result?.text !== 'string') {
             return { ok: false, error: 'Gemini 未回應內容，請稍後再試或確認金鑰權限。' };

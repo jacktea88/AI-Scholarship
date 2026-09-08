@@ -16,6 +16,7 @@ import path from 'path';
 import { GoogleGenAI } from '@google/genai';
 import { supabaseServer } from '../supabase/server';
 import { getSystemConfig } from '../config';
+import { GEMINI_MODEL } from './models';
 
 // 附件全文抽取上限（成本控制）
 const MAX_PDF_PER_ANNOUNCEMENT = 3;
@@ -77,7 +78,7 @@ async function extractAttachmentTexts(attachments = []) {
             const buffer = await fs.readFile(filePath);
 
             const result = await ai.models.generateContent({
-                model: 'gemini-3.6-flash',
+                model: GEMINI_MODEL,
                 contents: [{
                     parts: [
                         { inlineData: { mimeType: 'application/pdf', data: buffer.toString('base64') } },

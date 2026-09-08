@@ -15,8 +15,9 @@ import { supabaseServer } from '../supabase/server';
 import { getSystemConfig, setSystemConfig } from '../config';
 import { searchKnowledge } from './knowledge';
 import { validateFaqBlocks } from '../faqBlocks';
+import { GEMINI_MODEL } from './models';
 
-const EVAL_MODEL = 'gemini-3.6-flash';
+const EVAL_MODEL = GEMINI_MODEL;
 const MAX_QUESTIONS = 400;      // 送入 LLM 的提問上限（成本控制）
 const MAX_GAPS = 12;            // 單次歸納的缺口數上限
 const SAMPLE_CAP = 6;           // 每個缺口保留的樣本提問數

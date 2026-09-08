@@ -11,10 +11,11 @@
 import { GoogleGenAI } from '@google/genai';
 import { supabaseServer } from '../supabase/server';
 import { getSystemConfig } from '../config';
+import { GEMINI_MODEL } from './models';
 
 // 與 /api/users/background（個資頁手動編輯）相同的長度上限
 export const BACKGROUND_MAX = 1000;
-const MEMORY_MODEL = 'gemini-3.6-flash';
+const MEMORY_MODEL = GEMINI_MODEL;
 
 const MAX_ITEMS = 6;
 const MAX_ITEM_LEN = 200;

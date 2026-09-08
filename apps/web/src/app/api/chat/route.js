@@ -5,6 +5,7 @@ import { verifyUserAuth, checkRateLimit, handleApiError } from '@/lib/apiMiddlew
 import { supabaseServer as supabase } from '@/lib/supabase/server'
 import { getSystemConfig } from '@/lib/config'
 import { runScholarshipAgent } from '@/lib/ai/agent'
+import { GEMINI_MODEL } from '@/lib/ai/models'
 import { resolveGeminiKeyForUser } from '@/lib/ai/userKey'
 import { buildReviewContext } from '@/lib/ai/reviewGuide'
 
@@ -93,7 +94,7 @@ export async function POST(request) {
                     const { GoogleGenAI } = await import('@google/genai');
                     const extractorAi = new GoogleGenAI({ apiKey: geminiApiKey });
                     const extract = () => extractorAi.models.generateContent({
-                        model: 'gemini-3.6-flash',
+                        model: GEMINI_MODEL,
                         contents: [{ parts: [
                             { inlineData: { mimeType: attachment.mimeType, data: attachment.data } },
                             { text: '請將此文件內容完整轉為純文字，保留段落與條列結構；不要加入任何評論或摘要。' },
