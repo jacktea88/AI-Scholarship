@@ -132,6 +132,32 @@ export default function LineTab() {
         fetchMessages(user.line_user_id);
     };
 
+    // LINE 頭像 URL 在好友更換頭像後會失效：載入失敗時向 LINE 重新同步一次，仍失敗則改顯示預設頭像
+    const avatarRetriedRef = useRef(new Set());
+    const handleAvatarError = useCallback(async (user) => {
+        const id = user.line_user_id;
+        const patchUser = (patch) => {
+            setUsers(prev => prev.map(u => u.line_user_id === id ? { ...u, ...patch } : u));
+            setSelectedUser(prev => prev?.line_user_id === id ? { ...prev, ...patch } : prev);
+        };
+        const retryKey = `${id}|${user.picture_url}`;
+        if (avatarRetriedRef.current.has(retryKey)) { patchUser({ picture_url: null }); return; }
+        avatarRetriedRef.current.add(retryKey);
+        try {
+            const res = await authFetch('/api/admin/line/users/refresh', {
+                method: 'POST',
+                body: JSON.stringify({ lineUserId: id })
+            });
+            const data = await res.json();
+            const fresh = data.success ? data.profile : null;
+            // 取不到、或 URL 沒變卻仍載不出來 → 直接顯示預設頭像
+            if (!fresh?.picture_url || fresh.picture_url === user.picture_url) { patchUser({ picture_url: null }); return; }
+            patchUser({ picture_url: fresh.picture_url, display_name: fresh.display_name || user.display_name });
+        } catch (e) {
+            patchUser({ picture_url: null });
+        }
+    }, []);
+
     // ============ 「@」公告快捷選單 ============
     const [mentionQuery, setMentionQuery] = useState(null);   // null = 關閉;字串 = 過濾關鍵字
     const [mentionIndex, setMentionIndex] = useState(0);      // 鍵盤上下選擇的索引
@@ -537,7 +563,7 @@ export default function LineTab() {
                                         >
                                             {user.picture_url ? (
                                                 // eslint-disable-next-line @next/next/no-img-element
-                                                <img src={user.picture_url} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                                                <img src={user.picture_url} alt="" onError={() => handleAvatarError(user)} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
                                             ) : (
                                                 <div className="w-10 h-10 rounded-full bg-surface-hover flex items-center justify-center flex-shrink-0">
                                                     <User className="w-5 h-5 text-ink-soft/60" />

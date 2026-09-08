@@ -69,6 +69,13 @@ async function storeLineImage(lineUserId, messageId) {
     }
 }
 
+/**
+ * LINE 頭像 URL 會在使用者更換頭像後失效，故除加好友當下外，來訊時也定期重新同步。
+ * 以程序內 Map 節流，同一好友在 TTL 內不重複呼叫 profile API。
+ */
+const PROFILE_SYNC_TTL_MS = 6 * 60 * 60 * 1000;
+const profileSyncedAt = new Map();
+
 async function upsertLineUser(lineUserId, { refreshProfile = false, isFollowed = true } = {}) {
     const now = new Date().toISOString();
     const { data: existing } = await supabaseServer
@@ -79,12 +86,14 @@ async function upsertLineUser(lineUserId, { refreshProfile = false, isFollowed =
 
     const row = { line_user_id: lineUserId, is_followed: isFollowed, updated_at: now };
 
-    if (refreshProfile || !existing || !existing.display_name) {
+    const stale = Date.now() - (profileSyncedAt.get(lineUserId) || 0) > PROFILE_SYNC_TTL_MS;
+    if (refreshProfile || !existing || !existing.display_name || stale) {
         const profile = await getLineProfile(lineUserId);
         if (profile) {
             row.display_name = profile.displayName || null;
             row.picture_url = profile.pictureUrl || null;
             row.status_message = profile.statusMessage || null;
+            profileSyncedAt.set(lineUserId, Date.now());
         }
     }
 

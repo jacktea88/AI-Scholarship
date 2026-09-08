@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { authFetch } from '@/lib/authFetch';
 import { useConfirm } from '@/components/ui/ConfirmDialog';
 import { MessageCircle, Loader2, CheckCircle2, Unlink, KeyRound, ExternalLink } from 'lucide-react';
@@ -18,6 +18,8 @@ export default function LineBindingCard({ showToast }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isBusy, setIsBusy] = useState(false);
     const [codeInput, setCodeInput] = useState('');
+    const [brokenAvatarUrl, setBrokenAvatarUrl] = useState(null);
+    const avatarRetriedUrlRef = useRef(null);
 
     const notify = useCallback((message, type) => {
         if (showToast) showToast(message, type);
@@ -48,6 +50,23 @@ export default function LineBindingCard({ showToast }) {
         window.history.replaceState({}, '', `${window.location.pathname}${params.toString() ? `?${params}` : ''}`);
         fetchStatus();
     }, [fetchStatus, notify]);
+
+    // LINE 頭像 URL 在使用者更換頭像後會失效：載入失敗時重新同步一次，仍失敗則改顯示預設圖示
+    const handleAvatarError = async () => {
+        const currentUrl = binding?.pictureUrl;
+        if (!currentUrl) return;
+        if (avatarRetriedUrlRef.current === currentUrl) { setBrokenAvatarUrl(currentUrl); return; }
+        avatarRetriedUrlRef.current = currentUrl;
+        try {
+            const res = await authFetch('/api/line/link?refresh=1');
+            const data = await res.json();
+            const fresh = data.success ? data.binding : null;
+            if (!fresh?.pictureUrl || fresh.pictureUrl === currentUrl) { setBrokenAvatarUrl(currentUrl); return; }
+            setBinding(fresh);
+        } catch (e) {
+            setBrokenAvatarUrl(currentUrl);
+        }
+    };
 
     const handleOauth = async () => {
         setIsBusy(true);
@@ -110,9 +129,9 @@ export default function LineBindingCard({ showToast }) {
                 <div className="flex items-center gap-2 text-sm text-ink-soft py-2"><Loader2 size={15} className="animate-spin" />載入中...</div>
             ) : binding ? (
                 <div className="flex items-center gap-3">
-                    {binding.pictureUrl ? (
+                    {binding.pictureUrl && binding.pictureUrl !== brokenAvatarUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={binding.pictureUrl} alt="" className="w-9 h-9 rounded-full border border-line" />
+                        <img src={binding.pictureUrl} alt="" onError={handleAvatarError} className="w-9 h-9 rounded-full border border-line object-cover" />
                     ) : (
                         <span className="w-9 h-9 rounded-full bg-ok/10 text-ok flex items-center justify-center"><CheckCircle2 size={18} /></span>
                     )}
