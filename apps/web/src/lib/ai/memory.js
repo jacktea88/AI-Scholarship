@@ -159,3 +159,155 @@ export async function mergeIntoBackground({ userId, items, apiKey = null, allowP
             : '已整理並加入記憶庫，之後的對話會自動帶入這些背景資料。',
     };
 }
+
+// ─────────────────────────────────────────────────────────────
+// 刪除（forget_memory）
+// ─────────────────────────────────────────────────────────────
+
+/** 把背景資料拆成條列行（相容舊資料非條列的情況） */
+export function splitBackgroundLines(text) {
+    return String(text || '')
+        .split(/\r?\n/)
+        .map(line => line.replace(/^[\s•\-*·]+/, '').trim())
+        .filter(Boolean);
+}
+
+/** 比對用：去掉空白與標點，統一小寫 */
+const compact = (s) => String(s || '').replace(/[\s•\-*·，,。.、；;：:！!？?()（）「」【】]/g, '').toLowerCase();
+
+/**
+ * 找出與「要刪除的描述」對應的行（子字串雙向比對，不經模型）。
+ * @returns {{lines:string[], removed:string[], notFound:string[]}}
+ */
+export function matchBackgroundLines(existing, items) {
+    const lines = splitBackgroundLines(existing);
+    const removed = new Set();
+    const notFound = [];
+    for (const item of items) {
+        const key = compact(item);
+        if (key.length < 2) { notFound.push(item); continue; }
+        const hits = lines.filter(line => {
+            const lk = compact(line);
+            // 行包含描述，或描述包含整行（整行至少 3 字，避免短行誤刪）
+            return lk.includes(key) || (lk.length >= 3 && key.includes(lk));
+        });
+        if (hits.length === 0) notFound.push(item);
+        else hits.forEach(h => removed.add(h));
+    }
+    return { lines, removed: [...removed], notFound };
+}
+
+/** 以模型移除描述中的資訊（用於描述與原句不同、子字串比對找不到時） */
+async function removeWithModel(existing, items, { apiKey: keyOverride = null, allowPlatformKey = true } = {}) {
+    const apiKey = keyOverride || (allowPlatformKey ? await getSystemConfig('GEMINI_API_KEY') : null);
+    if (!apiKey) return null;
+
+    const ai = new GoogleGenAI({ apiKey });
+    const prompt = `你是個人資料整理助手。請從「現有背景資料」中刪除「要刪除的資訊」所描述的內容，輸出刪除後的完整背景資料。
+
+規則：
+1. 只刪除與「要刪除的資訊」相符的內容；其餘每一項都必須原樣保留，不可改寫、不可新增。
+2. 若某一行同時含有要刪與不刪的內容，只移除要刪的部分，保留其餘。
+3. 以「• 」開頭的條列輸出，每項一行。
+4. 若找不到任何相符內容，原樣輸出現有背景資料。
+5. 全部刪光時輸出「（空）」。
+6. 只輸出背景資料本身，不要任何說明。
+
+現有背景資料：
+${existing}
+
+要刪除的資訊：
+${toBullets(items)}`;
+
+    try {
+        const res = await ai.models.generateContent({
+            model: MEMORY_MODEL,
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            config: { temperature: 0.1 },
+        });
+        const text = (res.text || '').trim();
+        if (!text) return null;
+        if (text === '（空）') return '';
+        // 刪除只能變短；變長或原樣不動（去空白比較）視為無效
+        if (text.length > existing.length || compact(text) === compact(existing)) return null;
+        return text;
+    } catch (error) {
+        console.warn('[Memory] remove failed, falling back to line match:', error.message);
+        return null;
+    }
+}
+
+/**
+ * 從記憶庫刪除指定內容（或全部清除）。
+ * @param {Object} options
+ * @param {string} options.userId
+ * @param {string[]} [options.items] 要刪除的內容描述（盡量引用原句）
+ * @param {boolean} [options.clearAll] 是否清空整個記憶庫
+ * @param {string|null} [options.apiKey]
+ * @param {boolean} [options.allowPlatformKey]
+ * @returns {Promise<{success:boolean, message:string, background?:string, removed?:string[], notFound?:string[], cleared?:boolean}>}
+ */
+export async function removeFromBackground({ userId, items = [], clearAll = false, apiKey = null, allowPlatformKey = true }) {
+    if (!userId) return { success: false, message: '缺少使用者身分，無法修改記憶庫。' };
+
+    const { data: profile, error: readError } = await supabaseServer
+        .from('profiles').select('ai_background').eq('id', userId).maybeSingle();
+    if (readError) {
+        if (readError.code === '42703') return { success: false, message: '資料庫尚未套用 migration（缺少 ai_background 欄位）。' };
+        return { success: false, message: `讀取現有背景資料失敗：${readError.message}` };
+    }
+
+    const existing = (profile?.ai_background || '').trim();
+    if (!existing) return { success: true, background: '', removed: [], notFound: [], message: '記憶庫目前是空的，沒有可刪除的內容。' };
+
+    const write = async (merged) => {
+        const { error } = await supabaseServer
+            .from('profiles')
+            .update({ ai_background: merged || null })
+            .eq('id', userId);
+        return error ? `寫入記憶庫失敗：${error.message}` : null;
+    };
+
+    if (clearAll) {
+        const err = await write('');
+        if (err) return { success: false, message: err };
+        return { success: true, cleared: true, background: '', removed: splitBackgroundLines(existing), notFound: [], message: '記憶庫已全部清除。' };
+    }
+
+    const cleaned = normalizeMemoryItems(items);
+    if (cleaned.length === 0) return { success: false, message: '沒有指定要刪除的內容。' };
+
+    // 1. 先做不經模型的逐行比對
+    const { lines, removed, notFound } = matchBackgroundLines(existing, cleaned);
+    let merged = lines.filter(line => !removed.includes(line));
+    let mergedText = merged.length > 0 ? toBullets(merged) : '';
+    let stillNotFound = notFound;
+    let modelRemoved = [];
+
+    // 2. 比對不到的描述交給模型（例如「我的年級」對應「就讀資工系三年級」的部分內容）
+    if (stillNotFound.length > 0 && mergedText) {
+        const viaModel = await removeWithModel(mergedText, stillNotFound, { apiKey, allowPlatformKey });
+        if (viaModel !== null) {
+            mergedText = viaModel;
+            modelRemoved = stillNotFound;
+            stillNotFound = [];
+        }
+    }
+
+    if (compact(mergedText) === compact(existing)) {
+        return { success: true, background: existing, removed: [], notFound: stillNotFound, message: '記憶庫中找不到相符的內容，沒有任何變更。可到「個人資料」頁直接編輯。' };
+    }
+
+    const err = await write(mergedText);
+    if (err) return { success: false, message: err };
+
+    return {
+        success: true,
+        background: mergedText,
+        removed: [...removed, ...modelRemoved],
+        notFound: stillNotFound,
+        message: stillNotFound.length > 0
+            ? `已刪除相符的內容；找不到：${stillNotFound.join('、')}。`
+            : '已從記憶庫刪除指定內容。',
+    };
+}

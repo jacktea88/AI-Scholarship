@@ -32,7 +32,7 @@ function isCommandNoise(q) {
     return COMMAND_NOISE.has(String(q || '').trim().toLowerCase());
 }
 
-function normalizeTopicKey(topic = '') {
+export function normalizeTopicKey(topic = '') {
     return String(topic).toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, '').slice(0, 120);
 }
 
