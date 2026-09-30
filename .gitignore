@@ -60,3 +60,4 @@ public/storage/attachments/*
 # ── backups / local infra ──
 /backups/
 /digirunner/
+docs/AIorgInfo.code-workspace
